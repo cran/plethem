@@ -4,7 +4,7 @@
 #' @description Parses the uploaded Consumer TRA exposure SpreadSheet to extract all the exposure names and values
 #' This function will not be called directly by the user
 #' @importFrom readxl excel_sheets read_excel
-#' 
+#' @import stringr
 #' @param path Path to Excel File
 #' 
 parseTRAFile <- function(path){
@@ -51,4 +51,34 @@ parseTRAFile <- function(path){
               "exponames"= list("Inhalation" = inh_list,
                                 "Oral" = oral_list)))#,
                                 #"Dermal"=dermal_list)))
+}
+
+#' Parse uploaded file for consexpo
+#' @description Parses the uploaded ConsExpo exposure SpreadSheet to extract all the exposure names and values
+#' This function will not be called directly by the user
+#' @importFrom readxl excel_sheets read_excel
+#' 
+#' @param path Path to Excel File
+#' 
+parseConsExpoFile <- function(path){
+  print(path)
+  f <- readLines(file(description = path),warn = F,skipNul = T)
+  f <- f[-which(f=="")]
+  #f_frame <- setNames(f[c("value","Units")],f["Cat"])
+  # Category Keywords to scan the file fow
+  cat_keywords <- c("Substance","Product","Population","Scenario")
+  subcat_keywords <- list("Substance"=c("Name","CASNumber","Molecular Weight","KOW"),
+                          "Product"=c("Name","Weight Fraction Substance"),
+                          "Population"=c("Name","Body weight"))
+  
+  # 
+  names <- setNames(which(startsWith(f[,1],"Results for")),gsub("Results for scenario ","",f[which(startsWith(f[,1],"Results for")),1]))
+  inhalation_data <- setNames(f[which(f[,1]=="Mean event concentration"),2],which(f[,1]=="Mean event concentration"))
+  inhalation_data <- inhalation_data[inhalation_data != ""]
+  dermal_data <- setNames(f[which(f[,1]=="Dermal load"),2],which(f[,1]=="Dermal load"))
+  dermal_data <- dermal_data[dermal_data != ""]
+  oral_data <- setNames(f[which(f[,1]=="Oral")+1,2],which(f[,1]=="Oral")+1)
+  oral_data<- oral_data[oral_data != ""]
+  return(list("exponames"=names,inhalation_data,dermal_data,oral_data))
+  #return(f)
 }

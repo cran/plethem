@@ -10,7 +10,6 @@
 runPlthemHTIVIVE<- function(vals){
   row_keys <- names(vals)
   num_rows <- length(row_keys)
-  #print(row_keys)
   result <- lapply(vals,preprocessUIData)
   return(result)
 }
@@ -30,19 +29,20 @@ preprocessUIData<- function(val){
   casn <- chem_data$casn
   mw <- chem_data$mw
   km <- val$num_km
+  expo <- val$num_expo
   # get POD
   pod <- val$num_ivc
   pod_unit <- val$sel_ivunit
   if (pod_unit=="um"){
     pod <- pod*mw/1000
   }
-  org <- "human"#ifelse(val$sel_org=="ha","human","rat")
-  age <- 25#ifelse(val$sel_org=="ha",25,52)
+  org <- ifelse(val$sel_org=="ha","human","rat")
+  age <- ifelse(val$sel_org=="ha",25,52)
  
   liver_wt <- val$num_lw
   bw <- val$num_bw
   hpgl <- val$num_hpgl
-  km <- val$num_km
+
   mpcppgl <- c(val$num_mppgl,val$num_cppgl)
   # get hepatic clerance type
   hepcl_type <- val$tab_heptype
@@ -75,7 +75,7 @@ preprocessUIData<- function(val){
   #print(scaled_hepcl)
   #scaled_hepcl_bw <- signif(scaled_hepcl*km/(bw^0.75),4)
   # calculate renal clearance
-  scaled_rencl <- ifelse(val$ch_rencl,val$num_gfr*val$num_fup,0)
+  scaled_rencl <- ifelse(val$ch_rencl,val$num_gfr*val$num_fupls,0)
 
   #calculate scaled Plasma clearance
   scaled_plcl <- 0 # set it to zero till I have more clarification on units and their relation
@@ -84,7 +84,7 @@ preprocessUIData<- function(val){
   ql <- val$num_ql
   qalv <- getLifecourseVentilationRate(25,"M")
   qc <- val$num_qc
-  fup <- val$num_fup
+  fup <- val$num_fupls
   bw<- val$num_bw
   pair <- val$num_pair
   dose <- 1
@@ -101,14 +101,19 @@ preprocessUIData<- function(val){
                              stop("Invalid IVIVE type")
   )
   equivalent_dose <- pod/ss_concentration
+
+  moe <- expo/equivalent_dose
+
   #equivalent_dose <- getEquivalentDose(ss_concentration)
   calcualted_vals_list <- list("hep"=signif(scaled_hepcl,4),
                                "ren"=signif(scaled_rencl,4),
                                "pls"=signif(scaled_plcl,4),
                                "css"=signif(ss_concentration,4),
-                               "eqdose"= signif(equivalent_dose,4))
+                               "eqdose"= paste(signif(equivalent_dose,4),"mg/kg/day",collapse = "",sep = " "),
+                               "expo"=paste(expo,"mg/kg/day",collapse = "",sep = " "),
+                               "moe"=signif(moe,4))
 
-  existing_vals_list <- list()#getValsMetadata(vals)
+  existing_vals_list <- list()
   return(calcualted_vals_list)
 }
 
@@ -289,6 +294,7 @@ calculateRecombClearance <- function(clearance,organism,age,
 #
 calculateOralNonvolCss <- function(dose,bw,ql,qc,fup,cl_type,scaled_hepcl,
                                   scaled_rencl,scaled_plcl){
+ 
 
   if (cl_type == "cl_eq1"){
     clh<- ql*fup*scaled_hepcl/(ql+(fup*scaled_hepcl))

@@ -2,8 +2,9 @@
 #' @description The UI for defining HT-IVIVE parameters in the HT-IVIVE project. 
 #' It is called by the HT-IVIVE server script when a new row is added or existing row is edited. It is never called directly by the user.
 #' @param namespace namespace for the module. This is unique and decided by the project server function
+#' @param set_list A list of inputs for the dropdown menus.
 #' @export
-HT_IVIVEUI <- function(namespace=""){
+HT_IVIVEUI <- function(namespace="",set_list = NULL){
   css <- "div .modal-lg {
   width:1000px
 
@@ -14,49 +15,58 @@ HT_IVIVEUI <- function(namespace=""){
     shinyjs::useShinyjs(),
     shinyjs::inlineCSS(css),
       tabsetPanel(id = "setupTabs",
-                  tabPanel("Physiologcal and Chemical Parameters",
+                  tabPanel("Physiological and Chemical Parameters",
                            fluidPage(
                              fluidRow(
-                               column(4,offset = 2,
-                                      tags$h5("Oragnism"),
-                                      tags$h4("Standard Human")
-                                      # selectInput(ns("sel_org"),label = "Select Organism",
-                                      #             choices = list("Standard Human"="ha",
-                                      #                            "Adult Rat"="ra"),
-                                      #             selected = "ha")
+                               column(8, offset = 2,
+                                      textInput(ns("txt_IVIVE_name"),"Name",
+                                                width = validateCssUnit("100%"),
+                                                placeholder = "Identifier for HT-IVIVE"))
+                               ),
+                             
+                             fluidRow(
+                               column(4,
+                                      uiOutput(ns("org_output"))
+                                      #$h4("Standard Human")
+                                      
                                       ),
                                column(4,
-                                      selectInput(ns("sel_chem"),
-                                                  label = "Select Chemical",
-                                                  choices = list())
+                                      uiOutput(ns("chem_output"))
+                                      ),
+                               column(4,
+                                      numericInput(ns("num_expo"),
+                                                   label = "Environmental Exposure (mg/kg/day)",
+                                                   value = 0,width = validateCssUnit("100%"))
                                       )
                              ),
                              fluidRow(
+                               column(4,
+                                      numericInput(ns("num_fupls"),
+                                                   label = "Fraction Unbound in Plasma",
+                                                   value = 1,width = validateCssUnit("100%"))
+                               ),
+                               column(4,
+                                      numericInput(ns("num_km"),
+                                                   "Michaelis Menten Constant",
+                                                   1)
+                               ),
+                               
+                               
+
                                column(4,
                                       numericInput(ns("num_bw"),
                                                    label = "Body Weight(kg)",
                                                    value = 70,
                                                    width = validateCssUnit("100%"))
-                                      ),
+                               )
+                               ),
+                             fluidRow(
                                column(4,
                                       numericInput(ns("num_qc"),
                                                    label = "Cardiac Output(L/h)",
                                                    value = 421.96,
                                                    width = validateCssUnit("100%"))
-                                      ),
-
-                               column(4,
-                                      numericInput(ns("num_fup"),
-                                                   label = "Fraction unbound in Plasma",
-                                                   value = 1,width = validateCssUnit("100%"))
-                               )
                                ),
-                             fluidRow(
-                               column(4,
-                                      numericInput(ns("num_km"),
-                                                   "Michelis Menten Constant",
-                                                   1)
-                                      ),
 
                                column(4,
                                       numericInput(ns("num_lw"),
@@ -75,43 +85,7 @@ HT_IVIVEUI <- function(namespace=""){
                            )
                   ),
 
-                           # sidebarLayout(
-                           #   sidebarPanel(
-                           #    fluidRow(
-                           #      ,
-                           #     # selectInput(ns("sel_chem"),label = "Select Chemical",choices = list())
-                           #    )
-                           #   ),
-                           #   mainPanel(
-                           #     fluidRow(
-                           #       column(6,
-                           #              numericInput(ns("num_pbld"),label = "Blood Plasma Partition Coefficient",value = 1,width = validateCssUnit("100%"))
-                           #       ),
-                           #       column(6,
-                           #              numericInput(ns("num_pair"),label = "Blood Air Partition Coefficient",value = 1,
-                           #                           width = validateCssUnit("100%")))
-                           #     ),
-                           #     fluidRow(
-                           #       column(6,
-                           #              numericInput(ns("num_fup"),label = "Fraction unbound in Plasma",value = 1,width = validateCssUnit("100%"))),
-                           #       column(6,
-                           #              numericInput(ns("num_gfr"),label = "Glomerular Filteration Rate",value = 10,width = validateCssUnit("100%")))
-                           #     ),
-                           #     fluidRow(
-                           #       column(6,
-                           #              numericInput(ns("num_bw"),label = "Body Weight(kg)",value = 10,width = validateCssUnit("100%"))),
-                           #       column(6,
-                           #              numericInput(ns("num_qc"),label = "Cardiac Output(L/h)",value = 10,width = validateCssUnit("100%")))
-                           #     ),
-                           #     fluidRow(
-                           #       column(6,
-                           #              numericInput(ns("num_lw"),label = "Liver Weight(kg)",value = 10,width = validateCssUnit("100%"))),
-                           #       column(6,
-                           #              numericInput(ns("num_ql"),label = "Blood Flow To Liver(L/h)",value = 10,width = validateCssUnit("100%")))
-                           #     )
-                           #   )
-                           # )),
-
+                    
                   tabPanel("Invitro POD",
                            fluidRow(
                              column(8,offset = 2,
@@ -122,7 +96,7 @@ HT_IVIVEUI <- function(namespace=""){
                                       ),
                                       column(6,
                                              selectInput(ns("sel_ivunit"),tags$h4("Unit"),
-                                                         list("	\u03BCm"="um",
+                                                         list("\ub5M"="um",
                                                               "mg/L"="mgL"),
                                                          width = validateCssUnit("100%"))
                                       )
@@ -157,12 +131,12 @@ HT_IVIVEUI <- function(namespace=""){
                                           fluidRow(
                                             column(4,offset = 2,
                                                    numericInput(ns("num_mppgl"),
-                                                                "Micoromal Protein /gm Liver",
+                                                                "Microsomal Protein /g Liver",
                                                                 40)
                                             ),
                                             column(4,
                                                    numericInput(ns("num_cppgl"),
-                                                                "Cytosolic Protein /gm Liver",
+                                                                "Cytosolic Protein /g Liver",
                                                                 80.7))
                                           ),
                                           fluidRow(
@@ -173,9 +147,9 @@ HT_IVIVEUI <- function(namespace=""){
                                                                width = validateCssUnit("100%"))),
                                            column(6,
                                                   selectInput(ns("sel_msunit"),label = "Units",
-                                                              choices = list("\u03BCmol/min/mg Protein"="ummmP",
-                                                                             "\u03BCL/min/mg Protein"="ulmmP",
-                                                                             "\u03BCL/h/mg Protein"="ulhmP",
+                                                              choices = list("\ub5mol/min/mg Protein"="ummmP",
+                                                                             "\ub5L/min/mg Protein"="ulmmP",
+                                                                             "\ub5L/h/mg Protein"="ulhmP",
                                                                              "mL/min/mg Protein"="mlmmP",
                                                                              "mL/h/mg Protein"="mlhmP"),
                                                               width = validateCssUnit("100%")))
@@ -187,8 +161,8 @@ HT_IVIVEUI <- function(namespace=""){
                                                                step = 0.001,value = 0.0,
                                                                width = validateCssUnit("100%"))),
                                            column(6,
-                                                  selectInput(ns("sel_cyunit"),label = "Units",choices = list("\u03BCL/min/mg Protein"="ulmmP",
-                                                                                                          "\u03BCL/h/mg Protein"="ulhmP",
+                                                  selectInput(ns("sel_cyunit"),label = "Units",choices = list("\ub5L/min/mg Protein"="ulmmP",
+                                                                                                          "\ub5L/h/mg Protein"="ulhmP",
                                                                                                           "mL/min/mg Protein"="mlmmP",
                                                                                                           "mL/h/mg Protein"="mlhmP"),
                                                               width = validateCssUnit("100%")))
@@ -198,7 +172,7 @@ HT_IVIVEUI <- function(namespace=""){
                                           fluidRow(
                                             column(6,
                                                    numericInput(ns("num_s9ppgl"),
-                                                                "S9 Fraction/ gm Liver",
+                                                                "S9 Fraction/ g Liver",
                                                                 value = 120.7))
                                           ),
                                          fluidRow(
@@ -209,8 +183,8 @@ HT_IVIVEUI <- function(namespace=""){
                                            column(6,
                                                   selectInput(ns("sel_s9unit"),
                                                               label = "Units",
-                                                              choices = list("\u03BCL/min/mg Protein"="ulmmP",
-                                                                             "\u03BCL/h/mg Protein"="ulhmP",
+                                                              choices = list("\ub5L/min/mg Protein"="ulmmP",
+                                                                             "\ub5L/h/mg Protein"="ulhmP",
                                                                              "mL/min/mg Protein"="mlmmP",
                                                                              "mL/h/mg Protein"="mlhmP"),
                                                               width = validateCssUnit("100%")))
@@ -219,7 +193,7 @@ HT_IVIVEUI <- function(namespace=""){
                                           fluidRow(
                                             column(4,
                                                    numericInput(ns("num_hpgl"),
-                                                                "10^6 Hepatocytes/gm Liver",
+                                                                "10^6 Hepatocytes/g Liver",
                                                                 137)
                                             )
                                           ),
@@ -242,7 +216,7 @@ HT_IVIVEUI <- function(namespace=""){
                                           fluidRow(
 
                                             column(4,
-                                                   fileInput(ns("cypCl_upload"),"Upload Cyp Clearence",
+                                                   fileInput(ns("cypCl_upload"),"Upload CYP Clearance",
                                                              multiple = F,placeholder = "Select CSV File",
                                                              buttonLabel = icon("search"),
                                                              accept = c("text/csv")
@@ -250,56 +224,13 @@ HT_IVIVEUI <- function(namespace=""){
 
                                                   ),
                                             column(2,
-                                                   downloadLink(ns("cypCl_temp"),"Template for the CSV file")
+                                                   downloadLink(ns("cypCl_temp"),"Template for CYP Clearance Data")
                                                    ),
                                             column(6,
                                                    DT::DTOutput(ns("cypCl"))
                                                    )
                                             )
-                                         # fluidRow(
-                                         #   column(6,offset = 4,
-                                         #          tags$h4("Clerance in \u03BCL/min/pmol"))
-                                         # ),
-                                         # fluidRow(
-                                         #   column(6,
-                                         #          numericInput(ns("num_cyp1a2cl"),label="Measured CYP1A2 Clearance",
-                                         #                       value = 0,width = validateCssUnit("100%"))),
-                                         #   column(6,
-                                         #          numericInput(ns("num_cyp2b6cl"),label="Measured CYP2B6 Clearance",
-                                         #                       value = 0,width = validateCssUnit("100%")))
-                                         # ),
-                                         # fluidRow(
-                                         #   column(6,
-                                         #          numericInput(ns("num_cyp3a4cl"),label="Measured CYP3A4 Clearance",
-                                         #                       value = 0,width = validateCssUnit("100%"))),
-                                         #   column(6,
-                                         #          numericInput(ns("num_cyp2c19cl"),label="Measured CYP2C19 Clearance",
-                                         #                       value = 0,width = validateCssUnit("100%")))
-                                         # ),
-                                         # fluidRow(
-                                         #   column(6,
-                                         #          numericInput(ns("num_cyp2c9cl"),label="Measured CYP2C9 Clearance",
-                                         #                       value = 0,width = validateCssUnit("100%"))),
-                                         #   column(6,
-                                         #          numericInput(ns("num_cyp3a5cl"),label="Measured CYP3A5 Clearance",
-                                         #                       value = 0,width = validateCssUnit("100%")))
-                                         # ),
-                                         # fluidRow(
-                                         #   column(6,
-                                         #          numericInput(ns("num_ces1mcl"),label="Measured CES1M Clearance",
-                                         #                       value = 0,width = validateCssUnit("100%"))),
-                                         #   column(6,
-                                         #          numericInput(ns("num_ces1ccl"),label="Measured CES1C Clearance",
-                                         #                       value = 0,width = validateCssUnit("100%")))
-                                         # ),
-                                         # fluidRow(
-                                         #   column(6,
-                                         #          numericInput(ns("num_ces2mcl"),label="Measured CES2M Clearance",
-                                         #                       value = 0,width = validateCssUnit("100%"))),
-                                         #   column(6,
-                                         #          numericInput(ns("num_ces2ccl"),label="Measured CES2C Clearance",
-                                         #                       value = 0,width = validateCssUnit("100%")))
-                                         # )
+                                    
                                          )
                                )),
                            fluidRow(column(12,
@@ -309,25 +240,15 @@ HT_IVIVEUI <- function(namespace=""){
                                                                     "Non-restrictive Clearance"="cl_eq3"))
                                            )
                                     )
-                           # dashboardPage(
-                           #   dashboardHeader(disable = TRUE),
-                           #   dashboardSidebar(sidebarMenu(id = ns("heptype"),
-                           #                                menuItem("Sub cellular Fraction",tabName = "hep_sc"),
-                           #                                menuItem("S9 Fraction",tabName = "hep_s9"),
-                           #                                menuItem("Whole Hepatocytes",tabName = "hep_whole"),
-                           #                                menuItem("Recombinant Enzymes",tabName = "hep_recomb"))),
-                           #   dashboardBody(
-
-                             # )
-                             # )
                   ),
                   tabPanel("Renal Clearance",
                            fluidRow(
-                             column(8, offset = 2,
+                             column(4, offset = 2,
                                       numericInput(ns("num_gfr"),
-                                                   label = "Glomerular Filteration Rate",
-                                                   value = 6.7,
-                                                   width = validateCssUnit("100%")),
+                                                       label = "Glomerular Filteration Rate (L/h)",
+                                                       value = 6.7,
+                                                       width = validateCssUnit("100%")
+                                                       ),
 
                                       checkboxInput(ns("ch_rencl"),label = "Include Renal Clearance",width = validateCssUnit("100%")),
                                       tags$h4("Renal Clearence is calculated as a product of Glomerular Filteration Rate measured in L/h
@@ -338,18 +259,18 @@ HT_IVIVEUI <- function(namespace=""){
                            ),
                   tabPanel("Clearance in Blood",
                            fluidRow(
-                             column(8, offset = 2,
+                             column(4, offset = 2,
                                     numericInput(ns("num_pbld"),
                                                  label = "Blood Plasma Partition Coefficient",
                                                  value = 1,width = validateCssUnit("100%")),
 
                                     numericInput(ns("num_plcl"),
-                                                 label = "Measured Plasma Clearance",
+                                                 label = "Measured Plasma Clearance (L/h)",
                                                  value = 0,width = validateCssUnit("100%")))
                            ))
 
     ),
-    title = "HT modal",
+    title = "Input HT-IVIVE data",
     size = "l",
     easyClose = FALSE,
     fade = TRUE,
@@ -383,10 +304,10 @@ HT_IVIVE <- function(input,output,session,vals="",type = "",chem_list = list(),i
                        "oralnonvol"="Oral Exposure Non Volatile Chemical",
                        "oralvol"="Oral Exposure Volatile Chemical",
                        "inhvol"="Inhalation Exposure Volatile Chemical",
-                       "um"="\u03BCm",
+                       "um"="\ub5M",
                        "mgL"="mg/L",
-                       "ulmmP"="\u03BCL/min/mg Protein",
-                       "ulhmP"="\u03BCL/h/mg Protein",
+                       "ulmmP"="\ub5L/min/mg Protein",
+                       "ulhmP"="\ub5L/h/mg Protein",
                        "mlmmP"="mL/min/mg Protein",
                        "mlhmP"="mL/h/mg Protein",
                        "Lh"="L/h",
@@ -397,6 +318,123 @@ HT_IVIVE <- function(input,output,session,vals="",type = "",chem_list = list(),i
                        "hep_recomb"="Recombinant Enzymes")
   chem_list <- getProjectChemicalList()
   chem_set_choices <- getAllSetChoices("chem")
+  if (type == "add"){
+    
+    output$chem_output <- renderUI({
+      
+      selectInput(ns("sel_chem"),
+                  label = "Select Chemical",
+                  choices = chem_set_choices)
+    })
+    
+    output$org_output <- renderUI({
+      selectInput(ns("sel_org"),label = "Select Organism",
+                  choices = list("Human"="ha",
+                                 "Rat"="ra"),
+                  selected = "ha")
+    })
+    
+   
+    
+    observeEvent(input$sel_chem,{
+      chid <- input$sel_chem
+      if(!is.null(chid)){
+        fupls <- chem_list[[as.integer(chid)]]["fupls"]
+        km <- chem_list[[as.integer(chid)]]["km"]
+        updateNumericInput(session,"num_fupls",value = as.numeric(fupls))
+        updateNumericInput(session,"num_km",value = as.numeric(km))
+      }
+    },ignoreInit = T,ignoreNULL = T,priority = 10)
+    
+    
+    # On Organism Change
+    observeEvent(input$sel_org,{
+      if(input$sel_org == "ha"){
+        # default is to assume adult human age of 25 years
+        age <- 25
+        bw <- 81.2079
+        qcc <- 421.96
+        liv_wt <- 1.58
+        liv_flw <- 99.5
+        gfr <- 8.85
+        updateNumericInput(session,"num_mppgl",value = 40)
+        updateNumericInput(session,"num_cppgl",value = 80.7)
+        updateNumericInput(session,"num_hpgl",value = 137)
+        updateNumericInput(session,"num_s9ppgl",value = 120.7)
+        updateNumericInput(session,"num_bw",value = bw)
+        updateNumericInput(session,"num_lw",value = liv_wt)
+        updateNumericInput(session,"num_qc",value = qcc)
+        updateNumericInput(session,"num_ql",value =liv_flw)
+        updateNumericInputIcon(session,"num_gfr",value =gfr)
+        
+      }else{
+        updateNumericInput(session,"num_mppgl",value = 45)
+        updateNumericInput(session,"num_cppgl",value = 91)
+        updateNumericInput(session,"num_s9ppgl",value = 136)
+        updateNumericInput(session,"num_hpgl",value = 110)
+        updateNumericInput(session,"num_bw",value = 0.3518)
+        updateNumericInput(session,"num_lw",value = 0.0136)
+        updateNumericInput(session,"num_qc",value = 3.11)
+        updateNumericInput(session,"num_ql",value =0.5709)
+        updateNumericInputIcon(session,"num_gfr",value =0.228)
+      }
+    },ignoreInit = T,priority = 10)
+    
+    
+  }else{
+    # all the updates in this section come from existing data from vals
+    # get the row to be edited
+    row_data <- vals$m_table[row_selected,]
+    
+    # get the row key for the vals object. The row key is stored in a hidden rn column
+    
+    row_number <- vals$m_table[row_selected,]["rn"]
+    row_key <- paste0("row_",row_number)
+    row_values <- vals[[row_key]]
+    chem_name <- names(chem_set_choices)[chem_set_choices == as.integer(row_values$sel_chem)]
+
+    output$chem_output <- renderUI({
+      tags$h4(chem_name)
+    })
+    organism <- switch(row_values$sel_org,
+                       "ha"="Human",
+                       "ra"="Rat")
+    output$org_output <- renderUI({
+      tags$h4(organism)
+    })
+    
+    
+    
+    #update select inputs
+    values <- row_values[grep("sel_",names(row_values),value = TRUE)]
+    
+    lapply(names(values),function(x){
+      if (!(x %in% c("chem","org"))){
+        updateSelectInput(session,x,selected = values[[x]])
+      }
+      })
+    #update radio buttons
+    values <- row_values[grep("rdo_",names(row_values),value = TRUE)]
+    lapply(names(values),function(x){updateRadioButtons(session,x,selected = values[[x]])})
+    #update tabitems
+    values <- row_values[grep("tab_",names(row_values),value = TRUE)]
+    lapply(names(values),function(x){updateTabsetPanel(session,x,selected = values[[x]])})
+    #update checkbox inputs
+    values <- row_values[grep("ch_",names(row_values),value = TRUE)]
+    lapply(names(values),function(x){updateCheckboxInput(session,x,value = values[[x]])})
+    #update text inputs
+    values <- row_values[grep("txt_",names(row_values),value = TRUE)]
+    lapply(names(values),function(x){updateTextInput(session,x,value = values[[x]])})
+    #update numeric Values
+    
+    values <- row_values[grep("num_",names(row_values),value = TRUE)]
+    lapply(names(values),function(x){updateNumericInput(session,x,value = values[[x]])})
+
+    
+  }
+  
+  
+  
   #chem_names <- chem_list$chem_names
   output$org_name <- renderText({return("Standard Human")})
   observe({
@@ -456,105 +494,22 @@ HT_IVIVE <- function(input,output,session,vals="",type = "",chem_list = list(),i
                                server = T
   )
 
-  # update the chem choices as they might have changed.
-  updateSelectInput(session,"sel_chem",choices = chem_set_choices)
+  
   # On Chemical Change
-  observeEvent(input$sel_chem,{
-    chid <- input$sel_chem
-    if(!is.null(chid)){
-      #print(chem_list)
-      fupls <- chem_list[[as.integer(chid)]]["fupls"]
-      km <- chem_list[[as.integer(chid)]]["km"]
-      updateNumericInput(session,"num_fup",value = as.numeric(fupls))
-      updateNumericInput(session,"num_km",value = as.numeric(km))
-      }
-    },priority = 10)
-
-
-
-
-  # # Get global table values
-  # mgpglTble <- reactive({
-  #   if (input$sel_org == "ha"){
-  #     MPCPPGL <- calcMPCPPGL(25)
-  #     #MPCPPGL <- as.vector(MPCPPGL)
-  #     MPPGL <- signif(MPCPPGL$MPPGL,4)
-  #     CPPGL <- signif(MPCPPGL$CPPGL,4)
-  #   }else{
-  #     MPPGL <- 0.0
-  #     CPPGL <- 0.0
-  #   }
-  #   return(data.frame("Fraction"=c("Microsomal","Cytosolic"),
-  #                     "Values"=c(MPPGL,CPPGL)))
-  # })
-  # output$mgpglTble <- DT::renderDT(DT::datatable(mgpglTble(),
-  #                                             caption = "Proteins/gm Liver Values",
-  #                                             rownames = NULL,
-  #                                             editable = T,
-  #                                             autoHideNavigation = T,
-  #                                             options= list(dom = "t")),server = T)
-
-
-  #
+  
+  
+  
+  
+ 
   if (type == "edit"){
 
-    # all the updates in this section come from existing data from vals
-    # get the row to be edited
-    row_data <- vals$m_table[row_selected,]
-
-    # get the row key for the vals object. The row key is stored in a hidden rn column
-
-    row_number <- vals$m_table[row_selected,]["rn"]
-    row_key <- paste0("row_",row_number)
-    row_values <- vals[[row_key]]
-
-    #update numeric Values
-    values <- row_values[grep("num_",names(row_values),value = TRUE)]
-    lapply(names(values),function(x){updateNumericInput(session,x,value = values[[x]])})
-    #update select inputs
-    values <- row_values[grep("sel_",names(row_values),value = TRUE)]
-    lapply(names(values),function(x){updateSelectInput(session,x,selected = values[[x]])})
-    #update radio buttons
-    values <- row_values[grep("rdo_",names(row_values),value = TRUE)]
-    lapply(names(values),function(x){updateRadioButtons(session,x,selected = values[[x]])})
-    #update tabitems
-    values <- row_values[grep("tab_",names(row_values),value = TRUE)]
-    lapply(names(values),function(x){updateTabsetPanel(session,x,selected = values[[x]])})
-    #update checkbox inputs
-    values <- row_values[grep("ch_",names(row_values),value = TRUE)]
-    lapply(names(values),function(x){updateCheckboxInput(session,x,value = values[[x]])})
+    
   }
 
-  # On Organism Change
-  observeEvent(input$sel_org,{
-    if(input$sel_org == "ha"){
-      # default is to assume adult human age of 25 years
-      age = 25
-      bw <- 70
-      qcc <- 421.96
-      liv_wt <- 1.820
-      liv_flw <- 90
-      gfr <- 6.7
-      updateNumericInput(session,"num_bw",value = bw)
-      updateNumericInput(session,"num_lw",value = liv_wt)
-      updateNumericInput(session,"num_qc",value = qcc)
-      updateNumericInput(session,"num_ql",value =liv_flw)
-      updateNumericInput(session,"num_gfr",value =gfr)
-
-    }else{
-      updateNumericInput(session,"num_bw",value = 0.3518)
-      updateNumericInput(session,"num_lw",value = 0.0136)
-      updateNumericInput(session,"num_qc",value = 3.11)
-      updateNumericInput(session,"num_ql",value =0.5709)
-      updateNumericInput(session,"num_gfr",value =0.228)
-    }
-  })
   observeEvent(input$ok,{
     # chemical Data
-    chem <- input$sel_chem
-    # Organism data
-    org <- input$sel_org
-    org_type_name <- "Standard Human"
+   
+    name <- input$txt_IVIVE_name
     # Type of reverse dosimetry
     rd_type  <- input$rdo_rdtype
     rd_type_name <- text_ui_dict[[rd_type]]
@@ -605,12 +560,34 @@ HT_IVIVE <- function(input,output,session,vals="",type = "",chem_list = list(),i
     # get all checkbox inputs
     temp <- sapply(names(input_list),function(x){grepl("ch_",x)})
     chkbox_param_names_list <- names(temp[temp==TRUE])
+    # get all text inputs
+    temp <- sapply(names(input_list),function(x){grepl("txt_",x)})
+    txt_param_names_list <- names(temp[temp=TRUE])
     row_values <-c(input_list[numeric_param_names_list],input_list[select_param_names_list],
                    input_list[radio_param_names_list],input_list[tab_param_names_list],
-                   input_list[chkbox_param_names_list],cypCl())
+                   input_list[chkbox_param_names_list],input_list[txt_param_names_list],
+                   cypCl())
+    if (type == "add"){
+      chem <- input$sel_chem
+      org <- input$sel_org
+    }else{
+      
+      # get the row key for the vals object. The row key is stored in a hidden rn column
+      
+      row_number <- vals$m_table[row_selected,]["rn"]
+      row_key <- paste0("row_",row_number)
+      chem <- vals[[row_key]]$sel_chem
+      org <- vals[[row_key]]$sel_org
+      row_values$sel_chem <- chem
+      row_values$sel_org <- org
+    }
+    org_type_name <- switch(org,
+                            "ha"="Human",
+                            "ra"="Rat")
 
     # create the row that will either be added or replace existing row
     data_added<- data.table::data.table("rn"=0,
+                                        "Name" = name,
                                         "Chemical"=chem_list[[as.integer(chem)]]["names"],
                                         "Organism"=org_type_name,
                                         "Type" = rd_type_name,

@@ -4,17 +4,27 @@
 \alias{newProject}
 \title{Start a new PLETHEM project.}
 \usage{
-newProject(name = "new_project", type = "PBPK", model = "rapidPBPK",
-  mode = "MC")
+newProject(
+  name = "new_project",
+  save_path = "",
+  type = "PBPK",
+  model = "rapidPBPK",
+  mode = "MC",
+  runUI = F
+)
 }
 \arguments{
 \item{name}{The name for the project}
+
+\item{save_path}{The path at which the new project will be saved}
 
 \item{type}{The type of the model that the project is tied to}
 
 \item{model}{The model to be used for the project}
 
 \item{mode}{Either Forward Dosimetry(FD) or Monte Carlo(MC) mode. Only valid for PBPK type models}
+
+\item{runUI}{trigger the appropriate interface after data is loaded into the database}
 }
 \description{
 A project consists of chemicals, organisms and datasets. The function asks the user for a location to save the project files on exit. It then launches the shiny user interface used to parameterize and run the model.

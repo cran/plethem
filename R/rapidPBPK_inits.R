@@ -13,6 +13,19 @@ rapidPBPK_initParms <- function(newParms = NULL) {
     inhdays = 0,
     ivdose = 0,
     ivlen = 0,
+    dermrate = 0,
+    KPtot = 0,
+    Kevap = 0,
+    maxcap = 0,
+    wsol = 0,
+    skarea = 0,
+    bdosev = 0,
+    blenv = 0,
+    brepsv = 0,
+    totbrepsv = 0,
+    kfec = 0,
+    kVtoL = 0,
+    kent = 0,
     bw = 0,
     qcc = 0,
     hct = 0,
@@ -124,12 +137,14 @@ rapidPBPK_initParms <- function(newParms = NULL) {
     km = 0,
     cinh = 0,
     qalv = 0,
-    pair = 1e10
+    pair = 1e10,
+    fuplsmet = 1,
+    vdmet = 42
   )
 
   if (!is.null(newParms)) {
     if (!all(names(newParms) %in% c(names(parms)))) {
-      print(setdiff(names(newParms),c(names(parms))) )
+      print(names(newParms)[!(names(newParms))%in% c(names(parms))])
       stop("illegal parameter name")
     }
     parms[names(newParms)] <- newParms
@@ -196,7 +211,10 @@ rapidPBPK_Outputs <- c(
     "ctspf",
     "cbspf",
     "InstInhDose",
-    "mbal"
+    "InstDermDose",
+    "mbal",
+    "curine",
+    "curinemet"
 )
 
 rapidPBPK_initStates <- function(parms, newStates = NULL) {
@@ -208,13 +226,24 @@ rapidPBPK_initStates <- function(parms, newStates = NULL) {
     odose = 0.0,
     totddose = 0.0,
     ddose = 0.0,
+    odosev = 0.0,
+    totodosev = 0.0,
+    alas = 0.0,
+    akent = 0.0,
+    afec = 0.0,
     aabsgut = 0.0,
     ivswch = 0.0,
     aiv = 0.0,
+    dermswch = 0.0,
+    aderm = 0.0,
+    adermabs = 0.0,
+    adermevap = 0.0,
     abld = 0.0,
     abfat = 0.0,
     atfat = 0.0,
     abskin = 0.0,
+    asc = 0.0,
+    ascMgcm2 = 0.0,
     atskin = 0.0,
     abmusc = 0.0,
     atmusc = 0.0,
@@ -240,7 +269,10 @@ rapidPBPK_initStates <- function(parms, newStates = NULL) {
     ametliv2 = 0.0,
     aclbld = 0.0,
     auexc = 0.0,
-    anabsgut = 0.0
+    anabsgut = 0.0,
+    auexcmet = 0.0,
+    amet = 0.0,
+    vurine = 1e-10
   )
 
   if (!is.null(newStates)) {

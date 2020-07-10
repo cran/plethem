@@ -22,7 +22,7 @@ performIVIVEUI<- function(namespace){
                           ),
                           fluidRow(
                             column(3,
-                                   numericInput(ns("num_km"),"Michaelis-Menten Constant (\u00B5M)",value = 1)
+                                   numericInput(ns("num_km"),"Michaelis-Menten Constant (\ub5M)",value = 1)
                                    ),
                             column(3,
                                    numericInput(ns("num_hpgl"),"10^6 Hepatocytes per gram liver", value = 0)
@@ -47,7 +47,7 @@ performIVIVEUI<- function(namespace){
                                                             selectizeInput(ns("sel_whunit"),label = "Units",
                                                                            choices = c("L/h"="Lh",
                                                                                        "L/h/10^6 Hepatocytes"="LhH",
-                                                                                       "\u03BCmol/min/10^6 hepatocytes"="ummH")
+                                                                                       "\ub5mol/min/10^6 hepatocytes"="ummH")
                                                                            )
                                                             )
                                                    )                                   
@@ -62,9 +62,9 @@ performIVIVEUI<- function(namespace){
                                                               ),
                                                        column(4,
                                                               selectizeInput(ns("sel_msunit"),label = "Units",
-                                                                          choices = list("\u03BCmol/min/mg Protein"="ummmP",
-                                                                                         "\u03BCL/min/mg Protein"="ulmmP",
-                                                                                         "\u03BCL/h/mg Protein"="ulhmP",
+                                                                          choices = list("\ub5mol/min/mg Protein"="ummmP",
+                                                                                         "\ub5L/min/mg Protein"="ulmmP",
+                                                                                         "\ub5L/h/mg Protein"="ulhmP",
                                                                                          "mL/min/mg Protein"="mlmmP",
                                                                                          "mL/h/mg Protein"="mlhmP"))
                                                        )
@@ -78,8 +78,8 @@ performIVIVEUI<- function(namespace){
                                                        column(4,
                                                               selectizeInput(ns("sel_cyunit"),
                                                                           label = "Units",
-                                                                          choices = list("\u03BCL/min/mg Protein"="ulmmP",
-                                                                                         "\u03BCL/h/mg Protein"="ulhmP",
+                                                                          choices = list("\ub5L/min/mg Protein"="ulmmP",
+                                                                                         "\ub5L/h/mg Protein"="ulhmP",
                                                                                          "mL/min/mg Protein"="mlmmP",
                                                                                          "mL/h/mg Protein"="mlhmP"))
                                                        )
@@ -94,16 +94,23 @@ performIVIVEUI<- function(namespace){
                                                      ),
                                                      column(4,
                                                             selectizeInput(ns("sel_s9unit"),label = "Units",
-                                                                        choices = list("\u03BCL/min/mg Protein"="ulmmP",
-                                                                                       "\u03BCL/h/mg Protein"="ulhmP",
+                                                                        choices = list("\ub5L/min/mg Protein"="ulmmP",
+                                                                                       "\ub5L/h/mg Protein"="ulhmP",
                                                                                        "mL/min/mg Protein"="mlmmP",
                                                                                        "mL/h/mg Protein"="mlhmP"))
                                                             )
                                                      )
-                                          ),
-                                          shinyBS::bsButton(ns("btn_reset_metab"),"Reset All Clearance Values"),
-                                          type = "tab"
-                                          )
+                                          ),type = "tab"
+                                   )
+                                   ),
+                          fluidRow(
+                            column(4,
+                                   shinyBS::bsButton(ns("btn_reset_metab"),"Reset All Clearance Values",block = T)
+                                   ),
+                            column(8,
+                                   pickerInput(ns("sel_metabtype"),inline = T,label = "Metabolism Type",
+                                                  choices = c("Saturable"="m1","Linear"="m2"))
+                            )
                           )
                         ),size = "l",
                         footer = tagList(
@@ -152,6 +159,7 @@ performIVIVE <- function(input,output,session,km){
     updateNumericInput(session,"num_livwt",value = liver_wt)
   })
   module_calcs <- function(){
+    metab_type <- input$sel_metabtype
     hepcl_type <- input$heptype
     liver_wt <- input$num_livwt
     hpgl <- input$num_hpgl
@@ -174,7 +182,8 @@ performIVIVE <- function(input,output,session,km){
                                                                 liver_wt,hpgl,km),
                    0
     )
-    vmax <- vliv*km/(bw^0.75)
+    vmax <- ifelse(metab_type == "m1",vliv*km/(bw^0.75),0)
+    vliv <- ifelse(metab_type == "m2",vliv,0)
     #print(c(vliv,vmax,km))
     return(c("Yes",vliv/liver_wt,vmax,km))
   }

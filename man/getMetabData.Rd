@@ -4,14 +4,10 @@
 \alias{getMetabData}
 \title{Gets the metabolism data. Should not be used by directly by the user}
 \usage{
-getMetabData(metabid, physioid, chemid, model)
+getMetabData(admeid, model = "rapidPBPK")
 }
 \arguments{
-\item{metabid}{The meabolism id to get information from the metabolism tables}
-
-\item{physioid}{Physiological id to get the age from the physiological table}
-
-\item{chemid}{internal chemical ID}
+\item{admeid}{The id for ADME set. The admeid is used to obtain information about the other sets.}
 
 \item{model}{Model name}
 }

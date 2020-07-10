@@ -1,26 +1,47 @@
 Package: plethem
 Title: Population Life Course Exposure to Health Effects Modeling
-Version: 0.1.7
+Version: 1.0.0
 Authors@R: c(person("Salil", "Pendse", email = "spendse@scitovation.com", role = c("aut", "cre")),
+  person("Kevin","Bronson",email = "kbronson@scitovation.com",role = "aut"),
+  person("Jeremy","Fitzpatrick",email = "jfitzpatrick@scitovation.com",role = "aut"),
+  person("Patrick","McMullen",email = "pmcmullen@scitovation.com",role="ctb"),
   person("ScitoVation, LLC",role ="cph")
   )
-Description: Functions, data and user interfaces for performing Physiologically Based Pharmacokinetic('PBPK') Modeling, In-vitro to In-vivo Extrapolation ('IVIVE') and exposure estimation. Also contains user interfaces to run models from the 'httk' package. Taken together these provide an easy to use and powerful modeling tool that can be used for all steps along the source-to-outcome continuum.All the analysis tools in the package can only be run as shiny apps. Check vignettes and package help for more information. More information on PBPK modeling can be found in the book 'Physiologically Based Pharmacokinetic Modeling: Science and Applications' by Reddy et al <doi:10.1002/0471478768>.
-Depends: R (>= 3.4.0)
+Description: Functions, data and user interfaces for performing Physiologically
+    Based Pharmacokinetic('PBPK') Modeling, In-vitro to In-vivo Extrapolation 
+    ('IVIVE') and exposure estimation. Also contains user interfaces to run 
+    models from the 'httk' package. Taken together these provide an easy to use
+    and powerful modeling tool that can be used for all steps along 
+    the source-to-outcome continuum.All the analysis tools in the package are
+    run as interactive applications. Check vignettes and package help for more
+    information. Refer to the manuscript 'Population Life-course exposure to 
+    health effects model (PLETHEM): An R package for PBPK modeling' 
+    <doi: 10.1016/j.comtox.2019.100115> for more information on the models and
+    algorithms used in the package. More information on PBPK modeling itself 
+    can be found in the book 'Physiologically Based Pharmacokinetic Modeling: 
+    Science and Applications' by Reddy et al <doi:10.1002/0471478768>.
+Depends: R (>= 3.6.0)
 License: MIT + file LICENSE
+URL: https://github.com/ScitoVation/plethem
+BugReports: https://github.com/ScitoVation/plethem/issues
 Encoding: UTF-8
 LazyData: true
 Imports: shiny, ggplot2, shinyBS, shinyWidgets, miniUI, shinydashboard,
-        rstudioapi, shinythemes, data.table, rhandsontable, deSolve,
-        truncdist, reshape2, dplyr, readxl, gdata, devtools, RSQLite,
-        formatR, plotly, magrittr, sqldf, utils, stats, DT, shinyjs,
-        V8, httk
+        rstudioapi, shinythemes, rhandsontable, deSolve, truncdist,
+        reshape2, dplyr, readxl, gdata, devtools, RSQLite, formatR,
+        plotly, magrittr, sqldf, utils, stats, DT, shinyjs, V8, httk,
+        NonCompart, stringr, doParallel, foreach, pracma, shinybusy,
+        data.table
 Suggests: testthat, rmarkdown, knitr
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0
 VignetteBuilder: knitr
 NeedsCompilation: yes
-Packaged: 2019-01-02 14:22:13 UTC; spendse
+Packaged: 2020-07-10 16:28:26 UTC; sPendse
 Author: Salil Pendse [aut, cre],
+  Kevin Bronson [aut],
+  Jeremy Fitzpatrick [aut],
+  Patrick McMullen [ctb],
   ScitoVation, LLC [cph]
 Maintainer: Salil Pendse <spendse@scitovation.com>
 Repository: CRAN
-Date/Publication: 2019-01-02 15:50:03 UTC
+Date/Publication: 2020-07-10 20:50:03 UTC
