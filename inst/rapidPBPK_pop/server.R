@@ -1,5 +1,3 @@
-
-
 shinyServer(function(input, output, session) {
   # Type of environment in which the shiny app is called
   run_type <- "prod" #"prod" for production, "dev" for development
@@ -568,17 +566,18 @@ shinyServer(function(input, output, session) {
   
   #Save/Restore Button function
   observeEvent(input$btn_sverest_adme,{
-    admeid <- input$sel_adme
-    set_values <- getParameterSet("adme",admeid)
-    #chem_vars <- subset(chem_name_df$Var,!(chem_name_df$Var %in% c("name","cas","descrp")))
-    UI_values <- reactiveValuesToList(input)[paste0("ms_",adme_name_df$Var)]
-    names(UI_values) <- gsub("ms_","",names(UI_values))
-    module_ns <- paste0("admerest",input$btn_sverest_adme)
-    saveRestoreParameterSetUI(module_ns)
-    parameterSets$sverestdat <- callModule(saveRestoreParameterSet,
-                                           module_ns,
-                                           UI_values,set_values,
-                                           adme_name_df,"adme")
+    sendSweetAlert(session,"Unavailable","Save/Restore Button is unavailable for ADME sets in this version of PLETHEM.")
+    # admeid <- input$sel_adme
+    # set_values <- getParameterSet("adme",admeid)
+    # #chem_vars <- subset(chem_name_df$Var,!(chem_name_df$Var %in% c("name","cas","descrp")))
+    # UI_values <- reactiveValuesToList(input)[paste0("ms_",adme_name_df$Var)]
+    # names(UI_values) <- gsub("ms_","",names(UI_values))
+    # module_ns <- paste0("admerest",input$btn_sverest_adme)
+    # saveRestoreParameterSetUI(module_ns)
+    # parameterSets$sverestdat <- callModule(saveRestoreParameterSet,
+    #                                        module_ns,
+    #                                        UI_values,set_values,
+    #                                        adme_name_df,"adme")
   })
 
   observe({
@@ -601,10 +600,10 @@ shinyServer(function(input, output, session) {
 
       # create a data frame for the mapply below
       val_df <- data.frame("var"=result_vector[2],"val"= result_vector[4],stringsAsFactors = FALSE,row.names = NULL)
-
+      print(val_df)
       # create the query
       query_list <-mapply(function(var,val,tbl_nme,id_nme,id){
-        temp <- sprintf("UPDATE %s SET value = %s WHERE %s = %i AND param = '%s';",
+        temp <- sprintf("UPDATE %s SET value = '%s' WHERE %s = %i AND param = '%s';",
                         tbl_nme,val,id_nme,id,var)
         return(temp)
       },
@@ -916,7 +915,7 @@ shinyServer(function(input, output, session) {
       p <- plot_ly(x = data[,1],type = "histogram", name = "Data")%>%
         add_trace(x = density_fit$x, y = density_fit$y,
                   type = "scatter",fill = "tozeroy",mode = "lines",
-                  name = "density",yaxis = "y2")%>%
+                  name = "Density",yaxis = "y2")%>%
         layout(
           title = "Biomonitoring Data",
           yaxis = list(title = "Count"),
@@ -2298,7 +2297,7 @@ output$physio_params_tble <- DT::renderDT(DT::datatable(current_params()$physio,
 
   output$expo_estimate<- DT::renderDT({DT::datatable(results$expo$expoEstimates,
                                                      rownames = F,
-                                                     colname = c("Percentiles",paste("Exposure (",results$expo$expo_units,")")),
+                                                     colname = c("Percentiles",paste("Exposure (",results$expo$expo_units,")",collapse = "")),
                                                      extensions = "Buttons",
                                                      options = list(dom= 'Blfrtip',
                                                                     buttons = c('copy','csv'),
@@ -3516,7 +3515,7 @@ createSimulationUI <- function(namespace,set_list,selected_list){
                                                      condition = "input.sel_sim_type == 'r2r'",
                                                      ns = ns,
                                                      column(6,offset = 3,
-                                                            selectizeInput(ns("sel_r2rExpo"),"Exposure Set to be used as a template",
+                                                            selectizeInput(ns("sel_r2rExpo"),"Template Exposure Set",
                                                                            choices =  set_list$extrapolate,
                                                                            selected = selected_list$extrapolate,
                                                                            width = validateCssUnit("100%")
@@ -3528,7 +3527,7 @@ createSimulationUI <- function(namespace,set_list,selected_list){
                                                  fluidRow(
                                                    column(6,offset=1,
                                                           numericRangeInput(ns("numrange_expo"),
-                                                                            "Exposure range",
+                                                                            "Exposure Range",
                                                                             value = c(0.01,1),
                                                                             separator = "to")
                                                    ),
