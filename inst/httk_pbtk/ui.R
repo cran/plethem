@@ -43,7 +43,7 @@ expo_sidebar <- shinydashboard::dashboardSidebar(shinydashboard::sidebarMenu(
 ################################compartment sidebar
 comp_sidebar <- shinydashboard::dashboardSidebar(
   shinydashboard::sidebarMenu(id="compsidebar",
-              
+
               menuItem(tags$h5(tags$span(style = "color:white",
                                          "Physiological Parameters")),
                        tabName = "physiolocal_parameters", selected = TRUE),
@@ -53,7 +53,7 @@ comp_sidebar <- shinydashboard::dashboardSidebar(
               menuItem("Kidney",tabName = "kidney"),
               menuItem("Lungs",tabName="lung"),
               menuItem("Rest of the body",tabName="rob")
-             
+
               )
 
   )
@@ -63,8 +63,8 @@ comp_sidebar <- shinydashboard::dashboardSidebar(
 chem_sidebar <- shinydashboard::dashboardSidebar(shinydashboard::sidebarMenu(
   id="chem_sidebar",
   selectizeInput("qsarModelChem", "Select A QSAR Model",
-                          choices = c("QSAR model one" = 'one',
-                                      "QSAR model two" = 'two'),
+                          choices = c("QSAR Model One" = 'one',
+                                      "QSAR Model Two" = 'two'),
                           width = "99%"),
   shinyBS::bsButton("qsar4chem_props","Calculate Chemical Params",style = "primary"),
   shinyBS::bsButton("btn_ivive_chem","Perform IVIVE",style = "primary")
@@ -122,7 +122,7 @@ plot_body <- fluidPage(
                                                    )
                                                    ),
                                           tabPanel("Dataset",value = "dataset",
-                                                   shinyWidgets::pickerInput("cplt_data",multiple = F,
+                                                   shinyWidgets::pickerInput("cplt_data",multiple = FALSE,
                                                                             label = tags$h4("Select Datasets"),
                                                                             choices = c("No Dataset"="none"),#,
                                                                             selected = "none")
@@ -160,9 +160,9 @@ plot_body <- fluidPage(
                                                                               "Amount in Renal Tubules"="atubules")
                                                 )
                                                 )
-                                              
+
                                               ),
-                                       
+
                                        column(9,
                                               tabBox(width = 12,height = validateCssUnit("100%"),
                                                      tabPanel("Plot",
@@ -271,7 +271,7 @@ comp_body <- dashboardBody(
 
       ),
       fluidRow(
-        
+
         column(4,
                numericInput("ms_Qgfrc","Glomerular Filteration (L/h/kg BW)",min =0 , max =1, value =0.08)
                ),
@@ -291,7 +291,7 @@ comp_body <- dashboardBody(
         column(6,
                numericInput("ms_Qgutf","Blood Flow Ratio",min =0 , max =1, value =0.1139))
       ),
-      
+
       fluidRow(class="",
                column(6,
                       numericInput("ms_Kgut2pu","Partition Coefficient",0.5,0,2, 0.01)))
@@ -304,7 +304,7 @@ comp_body <- dashboardBody(
         column(6,
                numericInput("ms_Qliverf","Blood Flow Ratio",min =0 , max =1, value =0.1139))
       ),
-      
+
       fluidRow(class="",
                column(6,
                       numericInput("ms_Kliver2pu","Partition Coefficient",0.5,0,2, 0.01)
@@ -329,7 +329,7 @@ comp_body <- dashboardBody(
                numericInput("ms_Vvenc","Venous Volume Ratio",min =0 , max =1, value =0.1139)
                )
       ),
-      
+
       fluidRow(class="",
                column(6,
                       numericInput("ms_Krbc2pu","RBC to Plasma Partition Coefficient",0.5,0,2, 0.01)
@@ -344,7 +344,7 @@ comp_body <- dashboardBody(
         column(6,
                numericInput("ms_Qkidneyf","Blood Flow Ratio",min =0 , max =1, value =0.1139))
       ),
-      
+
       fluidRow(class="",
                column(6,
                       numericInput("ms_Kkidney2pu","Partition Coefficient",0.5,0,2, 0.01)))
@@ -357,7 +357,7 @@ comp_body <- dashboardBody(
         column(6,
                numericInput("ms_Qlungf","Blood Flow Ratio",min =0 , max =1, value =0.1139))
       ),
-      
+
       fluidRow(class="",
                column(6,
                       numericInput("ms_Klung2pu","Partition Coefficient",0.5,0,2, 0.01)))
@@ -370,7 +370,7 @@ comp_body <- dashboardBody(
         column(6,
                numericInput("ms_Qrestf","Blood Flow Ratio",min =0 , max =1, value =0.1139))
       ),
-      
+
       fluidRow(class="",
                column(6,
                       numericInput("ms_Krest2pu","Partition Coefficient",0.5,0,2, 0.01)))
@@ -439,7 +439,7 @@ expo_body <- dashboardBody(
         column(6,
                numericInput("ms_breps","Number of Bolus Doses",0,0,100, 1)),
         column(6,
-               awesomeCheckbox("ms_brep_flag","Repeat Dose Daily?",value = F))
+               awesomeCheckbox("ms_brep_flag","Repeat Dose Daily?",value = FALSE))
       )
 
 
@@ -479,7 +479,7 @@ expo_body <- dashboardBody(
       ),
       fluidRow(
         column(6,
-               awesomeCheckbox("ms_ivrep_flag","Repeat Dose Daily?",value = F))
+               awesomeCheckbox("ms_ivrep_flag","Repeat Dose Daily?",value = FALSE))
       )
     )
   )
@@ -491,7 +491,7 @@ shinyUI(fluidPage(
   shinyWidgets::useSweetAlert(),
   theme = shinythemes::shinytheme("spacelab"),
   includeCSS("www/styles.css"),
-  shinyjs::extendShinyjs(text = jscode),
+  shinyjs::extendShinyjs(text = jscode, functions = c("disableTab", "enableTab")),
   shinyjs::inlineCSS(css),
   titlePanel(title="", windowTitle = "PLETHEM rapidPBPK"),
   tags$head(
@@ -506,7 +506,7 @@ shinyUI(fluidPage(
              tabPanel("Model Setup",value = "setup",
                       icon = icon("flask"),
                       fluidRow(
-                        progressBar(id = "pb",value = 0, status = "success",striped = T)
+                        progressBar(id = "pb",value = 0, status = "success",striped = TRUE)
                       ),
                       # fluidRow(
                       #   column(4,
@@ -536,7 +536,7 @@ shinyUI(fluidPage(
                                                column(2,
                                                       shinyBS::bsButton("btn_seem_upload",
                                                                         "Import From SEEM Data",
-                                                                        block = T))
+                                                                        block = TRUE))
                                              ),
 
                                              fluidRow(
@@ -549,7 +549,7 @@ shinyUI(fluidPage(
                                                       selectizeInput("sel_expo",NULL,
                                                                      choices = NULL,
                                                                      options= list(placeholder = "Exposure Parameter Set",
-                                                                                   openOnFocus = T))),
+                                                                                   openOnFocus = TRUE))),
                                                column(width = 3, offset = 0,
                                                       shinyWidgets::actionGroupButtons(
                                                         c("btn_sverest_expo","btn_saveas_expo"),
@@ -590,7 +590,7 @@ shinyUI(fluidPage(
                                                       selectizeInput("sel_chem",NULL,
                                                                      choices = NULL,
                                                                      options= list(placeholder = "Chemicals",
-                                                                                   openOnFocus = T))),
+                                                                                   openOnFocus = TRUE))),
                                                column(width = 5, offset = 0,
                                                       shinyWidgets::actionGroupButtons(
                                                         c("btn_import_chem"),
@@ -621,7 +621,7 @@ shinyUI(fluidPage(
 
 
                                            fluidPage(
-                                            
+
 
                                              fluidRow(
                                                column(12,
@@ -633,7 +633,7 @@ shinyUI(fluidPage(
                                                       selectizeInput("sel_physio",NULL,
                                                                   choices = NULL,
                                                                   options= list(placeholder = "Physiological Parameter Set",
-                                                                                openOnFocus = T))),
+                                                                                openOnFocus = TRUE))),
                                                column(width = 3, offset = 0,
                                                       shinyWidgets::actionGroupButtons(
                                                         c("btn_import_physio","btn_sverest_physio","btn_saveas_physio"),
@@ -657,8 +657,8 @@ shinyUI(fluidPage(
                                                                   choices = list("Human" = "Human","Rat"= "Rat"),
                                                                   selected = "Human")
                                                       # shinyBS::tipify(selectizeInput("sel_qsar4Partition", NULL,
-                                                      #                choices = c("QSAR model one" = 'one',
-                                                      #                            "QSAR model two" = 'two')
+                                                      #                choices = c("QSAR Model One" = 'one',
+                                                      #                            "QSAR Model Two" = 'two')
                                                       #                ),
                                                       #                "Select QSAR model for partition coefficients")
                                                       ),
@@ -695,7 +695,7 @@ shinyUI(fluidPage(
                                   ),
                                   tabPanel("Uncertanity and Variability",
                                            dashboardPage(
-                                             dashboardHeader(disable = T),
+                                             dashboardHeader(disable = TRUE),
                                              dashboardSidebar(
                                                shinydashboard::sidebarMenu(
                                                  menuItem("Physiological",
@@ -713,14 +713,14 @@ shinyUI(fluidPage(
                                                                   selectizeInput("sel_physio_var",NULL,
                                                                                  choices = NULL,
                                                                                  options= list(placeholder = "Population Parameter Set",
-                                                                                               openOnFocus = T))),
+                                                                                               openOnFocus = TRUE))),
                                                            column(width = 8, offset = 0,
                                                                   shinyWidgets::actionGroupButtons(
                                                                     c("btn_new_varphys","btn_edit_varphys","btn_import_varphys"),
                                                                     c("New","Edit","Import"),
                                                                     direction = "horizontal",
                                                                     status = "info",
-                                                                    fullwidth = T)
+                                                                    fullwidth = TRUE)
                                                                   )
                                                            ),
                                                        fluidRow(
@@ -735,14 +735,14 @@ shinyUI(fluidPage(
                                                                 selectizeInput("sel_chem_var",NULL,
                                                                                choices = NULL,
                                                                                options= list(placeholder = "Metabolism Parameter Set",
-                                                                                             openOnFocus = T))),
+                                                                                             openOnFocus = TRUE))),
                                                          column(width = 8, offset = 0,
                                                                 shinyWidgets::actionGroupButtons(
                                                                   c("btn_new_varchem","btn_edit_varchem","btn_import_varchem"),
                                                                   c("New","Edit","Import"),
                                                                   direction = "horizontal",
                                                                   status = "info",
-                                                                  fullwidth = T)
+                                                                  fullwidth = TRUE)
                                                          )
                                                        ),
                                                        fluidRow(
@@ -756,14 +756,14 @@ shinyUI(fluidPage(
                                                                 selectizeInput("sel_expo_var",NULL,
                                                                                choices = NULL,
                                                                                options= list(placeholder = "Exposure Parameter Set",
-                                                                                             openOnFocus = T))),
+                                                                                             openOnFocus = TRUE))),
                                                          column(width = 8, offset = 0,
                                                                 shinyWidgets::actionGroupButtons(
                                                                   c("btn_new_varexpo","btn_edit_varexpo","btn_import_varexpo"),
                                                                   c("New","Edit","Import"),
                                                                   direction = "horizontal",
                                                                   status = "info",
-                                                                  fullwidth = T)
+                                                                  fullwidth = TRUE)
                                                          )
                                                        ),
                                                        fluidRow(
@@ -774,10 +774,10 @@ shinyUI(fluidPage(
                                                )
                                                )
                                            )
-                                           
+
                                            ),
                                   # tabPanel("Metabolism",
-                                  # 
+                                  #
                                   #          fluidPage(
                                   #            fluidRow(
                                   #              column(12,
@@ -785,12 +785,12 @@ shinyUI(fluidPage(
                                   #              )
                                   #            ),
                                   #            fluidRow(
-                                  # 
+                                  #
                                   #              column(2,
                                   #                     bsButton("btn_metab_upload",
                                   #                              "Upload Metabolism Files",
-                                  # 
-                                  #                              block = T)
+                                  #
+                                  #                              block = TRUE)
                                   #                     )
                                   #            ),
                                   #            fluidRow(
@@ -803,7 +803,7 @@ shinyUI(fluidPage(
                                   #                     selectizeInput("sel_metab",NULL,
                                   #                                    choices = NULL,
                                   #                                    options= list(placeholder = "Metabolism Parameter Set",
-                                  #                                                  openOnFocus = T))),
+                                  #                                                  openOnFocus = TRUE))),
                                   #              column(width = 5, offset = 0,
                                   #                     shinyWidgets::actionGroupButtons(
                                   #                       c("btn_sve_metab","btn_saveas_metab"),
@@ -811,7 +811,7 @@ shinyUI(fluidPage(
                                   #                       direction = "horizontal",
                                   #                       status = "info",
                                   #                       fullwidth = T
-                                  # 
+                                  #
                                   #                     ))
                                   #            ),
                                   #            fluidRow(
@@ -835,7 +835,7 @@ shinyUI(fluidPage(
                                   #            #
                                   #            # ),
                                   #            # fluidRow(column(width = 6,
-                                  #            #                 shinyWidgets::radioGroupButtons("metab_type",justified = T,
+                                  #            #                 shinyWidgets::radioGroupButtons("metab_type",justified = TRUE,
                                   #            #                                                 "Select Meatbolism Type",
                                   #            #                                                 choices = c("VmaxC"="m1","VlivC"="m2"))
                                   #            #                 )
@@ -846,17 +846,17 @@ shinyUI(fluidPage(
                                   #            # fluidRow(column(width = 4,
                                   #            #                 shinyWidgets::awesomeCheckbox("use_ref",
                                   #            #                                               "Use clearance at reference age for ages not in the metabolism table",
-                                  #            #                                               value = T)
+                                  #            #                                               value = TRUE)
                                   #            #                 ),
                                   #            #          column(width = 4,
                                   #            #                 numericInput("metab_ref_age","Referance age in Years",value = 25, min = 0))
                                   #            # ),
                                   #            fluidRow(column(width = 6, offset = 3,
                                   #                            DT::DTOutput("metab_tble")))
-                                  # 
-                                  # 
+                                  #
+                                  #
                                   #          )
-                                  # 
+                                  #
                                   #         ),
                                   tabPanel("Simulations",
                                            fluidPage(
@@ -913,7 +913,7 @@ shinyUI(fluidPage(
                                                                    numericInput("sim_dur","Simulation Duration (days)",0)
                                                                    ),
                                                             column(6,
-                                                                   numericInput("mc_num","Number of Montecarlo Runs",1000)
+                                                                   numericInput("mc_num","Number of Monte Carlo Runs",1000)
                                                                    )
                                                           ),
                                                           checkboxInput("mc_mode","Run Monte Carlo Simulation",T),
@@ -921,8 +921,8 @@ shinyUI(fluidPage(
                                                                                    icon = icon("floppy-save",lib = "glyphicon"),
                                                                                    style = "material-circle")
                                                         ),
-                                                        icon = icon("plus"),circle = F, 
-                                                        tooltip = F,size = "default",right = F,
+                                                        icon = icon("plus"),circle = FALSE,
+                                                        tooltip = FALSE,size = "default",right = FALSE,
                                                         width = validateCssUnit("100%"),
                                                         label = "Create new simulation",
                                                         status = "default" )),
@@ -1061,5 +1061,3 @@ shinyUI(fluidPage(
              tabPanel(title = "",value = "Stop",icon=icon("power-off"))
   )
 ))
-
-

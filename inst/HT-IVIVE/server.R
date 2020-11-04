@@ -23,7 +23,7 @@ shinyServer(function(input,output,session){
     "Organism"=numeric(),
     "Type" = numeric(),
     "Standard Exposure"=numeric(),
-    "Invitro POD"=numeric(),
+    "In vitro POD"=numeric(),
     "Hepatic Clearance"=numeric(),
     "Renal Clearance"=numeric(),
     "Plasma Clearance"=numeric(),keep.rownames = TRUE
@@ -38,7 +38,7 @@ shinyServer(function(input,output,session){
                #"Oral Non Volatile","Oral Non Volatile"),
     "Standard Exposure"=numeric(),#c("1 mg/kg/day","1 mg/kg/day",
                          #"1 mg/kg/day","1 mg/kg/day"),
-    "Invitro POD"=character(),#c("50.3 \u03BCm",
+    "In vitro POD"=character(),#c("50.3 \u03BCm",
                     #"10.2 \u03BCm",
                     #"2.5 mg/L",
                     #"8.9 \u03BCm"),
@@ -52,7 +52,7 @@ shinyServer(function(input,output,session){
     "Margin of exposure"=numeric()
   )
   output$master_table <- DT::renderDataTable(
-    DT::datatable(data = vals$m_table,rownames = F,escape = F,selection = "single",
+    DT::datatable(data = vals$m_table,rownames = FALSE,escape = FALSE,selection = "single",
                   options = list(
                     dom="tpl",
                     preDrawCallback = DT::JS('function() { Shiny.unbindAll(this.api().table().node()); }'),
@@ -62,7 +62,7 @@ shinyServer(function(input,output,session){
                       targets = 0,
                       visible = FALSE
                     ))
-                  )),server = T)
+                  )),server = TRUE)
   # scientific_notation_js <- c("function(row,data){",
   #                             "for (i=6,i< data.length,i++){",
   #                             "$('td:eq('+i+')',row).html(data[i].toExponential(2);",
@@ -70,17 +70,18 @@ shinyServer(function(input,output,session){
   #                             "}")
 
   output$result_table <- DT::renderDataTable(
-    DT::datatable(data = vals$result_table,rownames = F,escape = F,selection = "single",extensions = "Buttons",
+    DT::datatable(data = vals$result_table,rownames = FALSE,escape = FALSE,selection = "single",extensions = "Buttons",
                   options = list(
                     dom="Btpl",
+                    charset = "utf-8",
                     buttons = c("copy","csv","colvis"))#,
                     #rowCallback = DT::JS(scientific_notation_js))
-                    ),server = T)
+                    ),server = TRUE)
     # ,extensions = "Buttons",
     #               options = list(buttons=c('copy'),
     #                              dom = 'Bfrtip'))
 
-  #mster_tble_proxy <- DT::dataTableProxy("master_table",session,deferUntilFlush = F)
+  #mster_tble_proxy <- DT::dataTableProxy("master_table",session,deferUntilFlush = FALSE)
   observeEvent(input$run,{
     non_reactive_vals <- reactiveValuesToList(vals)
 
@@ -95,15 +96,15 @@ shinyServer(function(input,output,session){
     chem_list <- getAllSetChoices("chem")
     namespace <- paste0("add",as.character(input$add_row))
     HT_IVIVEUI(namespace)
-    
+
     vals<- callModule(id =namespace, module = HT_IVIVE,vals,
                       type = "add",
                       chem_list = chem_list,
                       idx = as.numeric(input$add_row))
-    
-    
+
+
     if (length(chem_list)>0){
-     
+
     }else{
       shinyWidgets::sendSweetAlert(session,"No chemicals found",
                                    "Please import chemicals to the project",
@@ -164,7 +165,7 @@ makeResultTable <- function(input_table,result){
     "Organism"=input_table$Organism,
     "Type" = input_table$Type,
     "Standard Exposure"=input_table[["Standard Exposure"]],
-    "Invitro POD"=input_table[["Invitro POD"]],
+    "In vitro POD"=input_table[["In vitro POD"]],
     "Actual Hepatic Clearance (L/h)"=paste0(lapply(result,"[[","hep")),
     "Actual Renal Clearance (L/h)"=paste0(lapply(result,"[[","ren")),
     "Actual Plasma Clearance (L/h)"=paste0(lapply(result,"[[","pls")),

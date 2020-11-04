@@ -51,7 +51,7 @@ preprocessUIData<- function(val){
                                                              c(val$sel_msunit,val$sel_cyunit),
                                                              org,age,liver_wt,
                                                              km,mpcppgl,
-                                                             return_total = T),
+                                                             return_total = TRUE),
                          "hep_s9"=calculateScaledS9Clearance(val$num_s9cl,val$sel_s9unit,
                                                              org,age,liver_wt,
                                                              km,mpcppgl),
@@ -72,7 +72,6 @@ preprocessUIData<- function(val){
                            ),org,age,liver_wt),
                          0
   )
-  #print(scaled_hepcl)
   #scaled_hepcl_bw <- signif(scaled_hepcl*km/(bw^0.75),4)
   # calculate renal clearance
   scaled_rencl <- ifelse(val$ch_rencl,val$num_gfr*val$num_fupls,0)
@@ -128,7 +127,7 @@ preprocessUIData<- function(val){
 # @param return_total logical, type of value to be returned,
 # @return  Total scaled invivo clearance in L/h if return_total is TRUE, else a named list of individual clearances
 calculateScaledSCClearance <- function(clearance,units,organism="human",
-                                       age,liver_wt,km,mpcppgl = list(),return_total = T){
+                                       age,liver_wt,km,mpcppgl = list(),return_total = TRUE){
   if (length(mpcppgl) == 0){
     # get MPPGL and CPPGL
     if (organism == "human"){
@@ -225,9 +224,11 @@ calculateScaledS9Clearance<- function(clearance,units,organism,
 # @param km michelis-menten constant for chemical
 # @return Scaled invivo clearance in L/h
 calculateScaledWholeHepClearance <- function(clearance,units,liver_wt,hpgl,km = 1){
+
+  
   if (units == "Lh"){ #Liters per hour
     scaled_hepcl <- clearance
-  }else if(units == "LhH"){ # Liters per hour per 10^6 hepatocytes
+  }else if(units == "lhhep"){ # Liters per hour per 10^6 hepatocytes
     scaled_hepcl <- clearance*hpgl*liver_wt*1000
   }else{ # umol/min/10^6 hepatocytes 
     scaled_hepcl <- (clearance/km)*60*hpgl*liver_wt*1000
@@ -247,7 +248,7 @@ calculateScaledWholeHepClearance <- function(clearance,units,liver_wt,hpgl,km = 
 # @return  Total scaled invivo clearance in L/h if return_total is TRUE, else a named list of individual clearances
 
 calculateRecombClearance <- function(clearance,organism,age,
-                                     liver_wt,cyp_data,return_total = T){
+                                     liver_wt,cyp_data,return_total = TRUE){
   # get a vector of enzyme names
   cyp_names <- cyp_data[["name"]]
   # get a list of enzyme location

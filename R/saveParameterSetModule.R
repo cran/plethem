@@ -54,7 +54,7 @@ saveAsParameterSetUI <- function(namespace, set_type){
 #' @param other placeholder paramter for data needed for certain sets
 #'@export
 saveAsParameterSet <- function(input,output,session,set_type,main_input,name_df,other= NULL){
-
+  #print("save parameter set")
   returnValues <- reactiveValues()
   returnValues$savedat <- c("No","",0)
   ns <- session$ns
@@ -123,7 +123,7 @@ saveAsParameterSet <- function(input,output,session,set_type,main_input,name_df,
     query <- sprintf("INSERT INTO %s (%s) VALUES %s ;",vals_table_name, write_col_names,all_values_string)
     projectDbUpdate(query)
     removeModal()
-  },ignoreNULL = T,ignoreInit = T)
+  },ignoreNULL = TRUE,ignoreInit = TRUE)
   return(returnValues$savedat)
 }
 
